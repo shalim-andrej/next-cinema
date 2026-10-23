@@ -2,7 +2,6 @@
 import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-// ДОБАВЛЕНЫ YEARS И RATINGS
 import { getPopularMovies, searchMovies, FilterParams, YEARS, RATINGS } from "./api-service"; 
 import SearchBar from "./components/SearchBar";
 import FilterBar from "./components/FilterBar";
@@ -17,7 +16,6 @@ export default async function HomePage({
   const { q, genre, year, rating } = await searchParams;
   const query = q?.trim() ?? "";
   
-  // Собираем объект фильтров
   const filters: FilterParams = {};
   
   if (genre) filters.genreId = Number(genre);
@@ -47,7 +45,6 @@ export default async function HomePage({
 
   return (
     <main className="min-h-screen bg-surface pb-24 text-white">
-      
       {/* HERO СЕКЦИЯ */}
       {heroMovie && (
         <section className="relative mx-auto flex min-h-[85vh] max-w-7xl flex-col-reverse items-center justify-center gap-12 px-6 py-20 md:flex-row md:justify-between md:gap-20">
@@ -64,7 +61,8 @@ export default async function HomePage({
             </h1>
             
             <p className="mb-8 text-lg font-medium text-neutral-400">
-              {heroMovie.year} • {heroMovie.genres.map((g:any) => g.genre).join(", ")}
+              {/* Убрали any здесь */}
+              {heroMovie.year} • {heroMovie.genres.map((g: { genre: string }) => g.genre).join(", ")}
             </p>
             
             <div className="flex items-center gap-4">
@@ -91,7 +89,7 @@ export default async function HomePage({
                 src={heroMovie.posterUrlPreview.replace('preview', 'original')}
                 alt={heroMovie.nameRu || ""}
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw" // ДОБАВЛЕН sizes
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
                 priority
               />
@@ -119,6 +117,7 @@ export default async function HomePage({
         </div>
 
         <InfiniteMovieList 
+          key={`${query}-${JSON.stringify(filters)}`} // ДОБАВЛЕН KEY (сбрасывает стейт без useEffect)
           initialMovies={data.items} 
           query={query} 
           filters={filters} 

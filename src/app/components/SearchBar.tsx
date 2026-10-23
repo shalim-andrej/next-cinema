@@ -21,10 +21,13 @@ export default function SearchBar() {
   const [input, setInput] = useState(currentQuery);
   const debouncedInput = useDebouncedValue(input, 400);
   const [isPending, startTransition] = useTransition();
-
-  useEffect(() => {
+  
+  // Синхронизация состояния без useEffect
+  const [prevQuery, setPrevQuery] = useState(currentQuery);
+  if (currentQuery !== prevQuery) {
+    setPrevQuery(currentQuery);
     setInput(currentQuery);
-  }, [currentQuery]);
+  }
 
   useEffect(() => {
     if (debouncedInput === currentQuery) return;

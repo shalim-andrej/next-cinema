@@ -27,7 +27,6 @@ export const RATINGS = [
   { label: "Любой", from: "0", to: "10" },
 ];
 
-// ... интерфейсы Movie, MovieDetails, MoviesResponse, MovieVideo, StaffMember остаются без изменений ...
 export interface Movie {
   kinopoiskId: number;
   nameRu: string | null;
@@ -55,7 +54,7 @@ export interface MovieDetails {
 
 export interface MoviesResponse { items: Movie[]; totalPages: number; }
 export interface MovieVideo { url: string; name: string; site: string; }
-export interface StaffMember { staffId: number; nameRu: string | null; nameEn: string | null; description: string | null; posterUrl: string; professionText: string; }
+export interface StaffMember { staffId: number; nameRu: string | null; nameEn: string | null; description: string | null; posterUrl: string; professionText: string; professionKey: string; }
 
 export interface FilterParams {
   genreId?: number;
@@ -65,7 +64,6 @@ export interface FilterParams {
   ratingTo?: string;
 }
 
-// Вспомогательная функция для сборки URL с фильтрами
 function buildFilterUrl(baseUrl: string, filters: FilterParams): string {
   let url = baseUrl;
   if (filters.genreId) url += `&genres=${filters.genreId}`;
@@ -76,7 +74,6 @@ function buildFilterUrl(baseUrl: string, filters: FilterParams): string {
 
 export async function getPopularMovies(page: number = 1, filters: FilterParams = {}): Promise<MoviesResponse> {
   try {
-    // Если есть фильтры, используем общий поиск с сортировкой по рейтингу. Иначе - топ популярных.
     let url = Object.keys(filters).length > 0 
       ? `${BASE_URL}/films?order=RATING&page=${page}&type=ALL`
       : `${BASE_URL}/films/collections?type=TOP_POPULAR_ALL&page=${page}`;
@@ -92,7 +89,7 @@ export async function getPopularMovies(page: number = 1, filters: FilterParams =
     if (!response.ok) return { items: [], totalPages: 0 };
     const data = await response.json();
     return { items: data.items || [], totalPages: data.totalPages || 1 };
-  } catch (error) {
+  } catch {
     return { items: [], totalPages: 0 };
   }
 }
@@ -109,12 +106,11 @@ export async function searchMovies(query: string, page: number = 1, filters: Fil
     if (!response.ok) return { items: [], totalPages: 0 };
     const data = await response.json();
     return { items: data.items || [], totalPages: data.totalPages || 1 };
-  } catch (error) {
+  } catch {
     return { items: [], totalPages: 0 };
   }
 }
 
-// ... остальные функции (getMovieDetails, getMovieVideos, getMovieStaff, getSimilarMovies) оставляем как были ...
 export async function getMovieDetails(id: string): Promise<MovieDetails | null> {
   try {
     const response = await fetch(`${BASE_URL}/films/${id}`, {
@@ -123,7 +119,7 @@ export async function getMovieDetails(id: string): Promise<MovieDetails | null> 
     });
     if (!response.ok) return null;
     return await response.json();
-  } catch (error) { return null; }
+  } catch { return null; }
 }
 
 export async function getMovieVideos(id: string): Promise<MovieVideo[]> {
@@ -135,7 +131,7 @@ export async function getMovieVideos(id: string): Promise<MovieVideo[]> {
     if (!response.ok) return [];
     const data = await response.json();
     return (data.items || []).filter((v: MovieVideo) => v.name.toLowerCase().includes('трейлер') || v.name.toLowerCase().includes('trailer'));
-  } catch (error) { return []; }
+  } catch { return []; }
 }
 
 export async function getMovieStaff(id: string): Promise<StaffMember[]> {
@@ -146,8 +142,9 @@ export async function getMovieStaff(id: string): Promise<StaffMember[]> {
     });
     if (!response.ok) return [];
     const data = await response.json();
-    return (data || []).filter((person: any) => person.professionKey === 'ACTOR').slice(0, 10);
-  } catch (error) { return []; }
+    // Заменили any на StaffMember
+    return (data || []).filter((person: StaffMember) => person.professionKey === 'ACTOR').slice(0, 10);
+  } catch { return []; }
 }
 
 export async function getSimilarMovies(id: string): Promise<Movie[]> {
@@ -159,7 +156,8 @@ export async function getSimilarMovies(id: string): Promise<Movie[]> {
     if (!response.ok) return [];
     
     const data = await response.json();
-    const similarIds = (data.items || []).slice(0, 5).map((item: any) => item.filmId);
+    // Заменили any на { filmId: number }
+    const similarIds = (data.items || []).slice(0, 5).map((item: { filmId: number }) => item.filmId);
     if (similarIds.length === 0) return [];
 
     const moviesData = await Promise.all(similarIds.map((filmId: number) => getMovieDetails(filmId.toString())));
@@ -172,5 +170,5 @@ export async function getSimilarMovies(id: string): Promise<Movie[]> {
         year: m.year,
         genres: m.genres,
       }));
-  } catch (error) { return []; }
+  } catch { return []; }
 }

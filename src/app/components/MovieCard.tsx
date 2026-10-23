@@ -3,13 +3,19 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Movie } from "../api-service";
 
-export default function MovieCard({ movie, index }: { movie: Movie | any; index: number }) {
+// Строгий тип для компонента
+type MovieCardProps = {
+  movie: Movie & { posterUrl?: string }; 
+  index: number;
+};
+
+export default function MovieCard({ movie, index }: MovieCardProps) {
   const poster = movie.posterUrlPreview || movie.posterUrl;
   
   let ratingColor = "text-neutral-400 bg-black/60";
-  if (movie.ratingKinopoisk >= 7) ratingColor = "text-green-400 bg-green-500/10";
-  else if (movie.ratingKinopoisk >= 5) ratingColor = "text-yellow-400 bg-yellow-500/10";
-  else if (movie.ratingKinopoisk) ratingColor = "text-red-400 bg-red-500/10";
+  if (movie.ratingKinopoisk && movie.ratingKinopoisk >= 7) ratingColor = "text-green-400 bg-green-500/20";
+  else if (movie.ratingKinopoisk && movie.ratingKinopoisk >= 5) ratingColor = "text-yellow-400 bg-yellow-500/20";
+  else if (movie.ratingKinopoisk) ratingColor = "text-red-400 bg-red-500/20";
 
   return (
     <Link
@@ -26,17 +32,14 @@ export default function MovieCard({ movie, index }: { movie: Movie | any; index:
           priority={index < 5}
         />
         
-        {/* Легкая тень снизу, чтобы текст читался */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         
-        {/* Рейтинг (Стекло) */}
         {movie.ratingKinopoisk && (
           <div className={`absolute left-2 top-2 rounded px-1.5 py-0.5 text-xs font-bold backdrop-blur-md ${ratingColor}`}>
             {movie.ratingKinopoisk.toFixed(1)}
           </div>
         )}
 
-        {/* Название (появляется при наведении) */}
         <div className="absolute inset-x-0 bottom-0 translate-y-2 p-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
           <h3 className="line-clamp-2 text-sm font-bold text-white">
             {movie.nameRu || movie.nameEn || "Без названия"}

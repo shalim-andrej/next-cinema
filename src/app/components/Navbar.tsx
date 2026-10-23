@@ -5,7 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logoutAction } from "../auth-actions";
 
-export default function Navbar({ favoritesCount, user }: { favoritesCount: number, user: any }) {
+interface NavbarProps {
+  favoritesCount: number;
+  user: { name: string; email: string } | null;
+}
+
+export default function Navbar({ favoritesCount, user }: NavbarProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isFavorites = pathname === "/favorites";
@@ -40,7 +45,6 @@ export default function Navbar({ favoritesCount, user }: { favoritesCount: numbe
 
           <div className="ml-4 h-4 w-px bg-white/20" />
 
-          {/* Блок авторизации */}
           {user ? (
             <div className="flex items-center gap-4 pl-2">
               <span className="text-sm font-medium text-neutral-300">

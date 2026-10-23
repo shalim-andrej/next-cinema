@@ -2,9 +2,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Movie, FilterParams } from "../api-service";
 import { loadMoreMovies } from "../actions";
 import MovieCard from "./MovieCard";
+import EmptyState from "./EmptyState";
 
 interface InfiniteMovieListProps {
   initialMovies: Movie[];
@@ -14,16 +16,11 @@ interface InfiniteMovieListProps {
 }
 
 export default function InfiniteMovieList({ initialMovies, query, filters, totalPages }: InfiniteMovieListProps) {
+  const router = useRouter();
   const [movies, setMovies] = useState<Movie[]>(initialMovies);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const observerRef = useRef<HTMLDivElement>(null);
-
-  // Сбрасываем стейт, если изменились фильтры
-  useEffect(() => {
-    setMovies(initialMovies);
-    setPage(1);
-  }, [initialMovies, query, JSON.stringify(filters)]);
 
   useEffect(() => {
     const currentObserver = observerRef.current;
@@ -33,7 +30,6 @@ export default function InfiniteMovieList({ initialMovies, query, filters, total
       (entries) => {
         if (entries[0].isIntersecting && !isLoading && page < totalPages) {
           setIsLoading(true);
-          
           loadMoreMovies(page + 1, query, filters)
             .then((res) => {
               setMovies((prev) => [...prev, ...res.items]);
@@ -51,10 +47,13 @@ export default function InfiniteMovieList({ initialMovies, query, filters, total
 
   if (movies.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-32 text-center">
-        <p className="text-2xl font-bold text-neutral-300">Ничего не найдено</p>
-        <p className="mt-2 text-neutral-500">Попробуйте изменить фильтры или поисковый запрос.</p>
-      </div>
+      <EmptyState
+        title="Ничего не найдено"
+        description="По вашему запросу не нашлось ни одного фильма. Попробуйте изменить параметры поиска или сбросить фильтры."
+        icon="search"
+        actionLabel="Сбросить фильтры"
+        onAction={() => router.push("/")}
+      />
     );
   }
 
