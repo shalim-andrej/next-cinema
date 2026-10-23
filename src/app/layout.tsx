@@ -37,12 +37,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="ru">
       <body className={`${manrope.className} flex min-h-screen flex-col bg-surface text-white antialiased`}>
-        {/* Активация PWA */}
         <PwaRegister />
         
+        {/* Skip Link для доступности */}
+        <a 
+          href="#main-content" 
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-black focus:outline-none"
+        >
+          Перейти к контенту
+        </a>
+
         <Navbar favoritesCount={favoritesCount} user={user} />
         
-        <div className="flex-1">
+        <div id="main-content" className="flex-1">
           {children}
         </div>
 

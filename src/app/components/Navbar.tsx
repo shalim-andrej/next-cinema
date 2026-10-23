@@ -18,14 +18,19 @@ export default function Navbar({ favoritesCount, user }: NavbarProps) {
   return (
     <header className="sticky top-0 z-50 border-b border-white/5 bg-surface/70 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link href="/" className="group flex items-center gap-2 text-2xl font-black tracking-tighter transition-colors">
-          <span className="text-brand group-hover:animate-pulse">●</span> 
+        <Link 
+          href="/" 
+          className="group flex items-center gap-2 text-2xl font-black tracking-tighter transition-colors"
+          aria-label="Кинотека - на главную"
+        >
+          <span className="text-brand group-hover:animate-pulse" aria-hidden="true">●</span> 
           КИНОТЕКА
         </Link>
         
-        <nav className="flex items-center gap-2 text-sm font-semibold">
+        <nav className="flex items-center gap-2 text-sm font-semibold" aria-label="Главное меню">
           <Link 
             href="/" 
+            aria-current={isHome ? "page" : undefined}
             className={`rounded-full px-4 py-2 transition-all ${isHome ? "text-white" : "text-neutral-400 hover:text-white"}`}
           >
             Главная
@@ -33,17 +38,21 @@ export default function Navbar({ favoritesCount, user }: NavbarProps) {
           
           <Link 
             href="/favorites" 
+            aria-current={isFavorites ? "page" : undefined}
             className={`relative flex items-center gap-2 rounded-full px-4 py-2 transition-all ${isFavorites ? "text-white" : "text-neutral-400 hover:text-white"}`}
           >
             Избранное
             {favoritesCount > 0 && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[10px] font-bold text-white">
+              <span 
+                className="flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[10px] font-bold text-white"
+                aria-label={`${favoritesCount} фильмов в избранном`}
+              >
                 {favoritesCount}
               </span>
             )}
           </Link>
 
-          <div className="ml-4 h-4 w-px bg-white/20" />
+          <div className="ml-4 h-4 w-px bg-white/20" aria-hidden="true" />
 
           {user ? (
             <div className="flex items-center gap-4 pl-2">
@@ -51,7 +60,11 @@ export default function Navbar({ favoritesCount, user }: NavbarProps) {
                 Привет, <span className="text-white">{user.name}</span>
               </span>
               <form action={logoutAction}>
-                <button type="submit" className="rounded-full bg-white/5 px-4 py-2 text-xs font-bold text-neutral-400 transition hover:bg-white/10 hover:text-white">
+                <button 
+                  type="submit" 
+                  className="rounded-full bg-white/5 px-4 py-2 text-xs font-bold text-neutral-400 transition hover:bg-white/10 hover:text-white"
+                  aria-label="Выйти из аккаунта"
+                >
                   Выйти
                 </button>
               </form>
@@ -60,6 +73,7 @@ export default function Navbar({ favoritesCount, user }: NavbarProps) {
             <Link 
               href="/login" 
               className="ml-2 rounded-full bg-white px-5 py-2 text-xs font-bold text-black transition hover:scale-105"
+              aria-label="Войти в аккаунт"
             >
               Войти
             </Link>
