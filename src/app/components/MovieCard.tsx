@@ -1,21 +1,24 @@
 // src/app/components/MovieCard.tsx
 import Image from "next/image";
 import Link from "next/link";
-import type { Movie } from "../api-service";
+import type { Movie, MovieDetails } from "../api-service";
 
-// Строгий тип для компонента
+// Карточка принимает как краткую инфу (Movie), так и полную (MovieDetails)
 type MovieCardProps = {
-  movie: Movie & { posterUrl?: string }; 
+  movie: Movie | MovieDetails;
   index: number;
 };
 
 export default function MovieCard({ movie, index }: MovieCardProps) {
-  const poster = movie.posterUrlPreview || movie.posterUrl;
+  // Проверяем наличие конкретного поля для постера и ставим пустую строку, если ничего нет
+  const posterUrl = ('posterUrlPreview' in movie ? movie.posterUrlPreview : movie.posterUrl) || "";
   
+  const rating = movie.ratingKinopoisk;
+
   let ratingColor = "text-neutral-400 bg-black/60";
-  if (movie.ratingKinopoisk && movie.ratingKinopoisk >= 7) ratingColor = "text-green-400 bg-green-500/20";
-  else if (movie.ratingKinopoisk && movie.ratingKinopoisk >= 5) ratingColor = "text-yellow-400 bg-yellow-500/20";
-  else if (movie.ratingKinopoisk) ratingColor = "text-red-400 bg-red-500/20";
+  if (rating && rating >= 7) ratingColor = "text-green-400 bg-green-500/20";
+  else if (rating && rating >= 5) ratingColor = "text-yellow-400 bg-yellow-500/20";
+  else if (rating) ratingColor = "text-red-400 bg-red-500/20";
 
   return (
     <Link
@@ -24,7 +27,7 @@ export default function MovieCard({ movie, index }: MovieCardProps) {
     >
       <div className="relative aspect-[2/3] w-full overflow-hidden">
         <Image
-          src={poster}
+          src={posterUrl}
           alt={movie.nameRu || movie.nameEn || "Постер"}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
@@ -34,9 +37,9 @@ export default function MovieCard({ movie, index }: MovieCardProps) {
         
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         
-        {movie.ratingKinopoisk && (
+        {rating && (
           <div className={`absolute left-2 top-2 rounded px-1.5 py-0.5 text-xs font-bold backdrop-blur-md ${ratingColor}`}>
-            {movie.ratingKinopoisk.toFixed(1)}
+            {rating.toFixed(1)}
           </div>
         )}
 

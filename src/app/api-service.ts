@@ -39,7 +39,7 @@ export interface Movie {
 }
 
 export interface MovieDetails {
-  kinopoiskId?: number;
+  kinopoiskId: number; // СДЕЛАЛИ ОБЯЗАТЕЛЬНЫМ
   nameRu: string | null;
   nameEn: string | null;
   nameOriginal?: string | null;
@@ -142,7 +142,6 @@ export async function getMovieStaff(id: string): Promise<StaffMember[]> {
     });
     if (!response.ok) return [];
     const data = await response.json();
-    // Заменили any на StaffMember
     return (data || []).filter((person: StaffMember) => person.professionKey === 'ACTOR').slice(0, 10);
   } catch { return []; }
 }
@@ -156,19 +155,20 @@ export async function getSimilarMovies(id: string): Promise<Movie[]> {
     if (!response.ok) return [];
     
     const data = await response.json();
-    // Заменили any на { filmId: number }
     const similarIds = (data.items || []).slice(0, 5).map((item: { filmId: number }) => item.filmId);
     if (similarIds.length === 0) return [];
 
     const moviesData = await Promise.all(similarIds.map((filmId: number) => getMovieDetails(filmId.toString())));
+    
+    // Теперь kinopoiskId обязательный, поэтому `as number` не нужен
     return moviesData.filter((m): m is MovieDetails => m !== null).map((m) => ({
-        kinopoiskId: m.kinopoiskId as number,
+        kinopoiskId: m.kinopoiskId,
         nameRu: m.nameRu,
         nameEn: m.nameEn,
         posterUrlPreview: m.posterUrl,
         ratingKinopoisk: m.ratingKinopoisk,
         year: m.year,
         genres: m.genres,
-      }));
+    }));
   } catch { return []; }
 }
