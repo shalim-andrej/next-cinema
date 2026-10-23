@@ -2,7 +2,8 @@
 import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { getPopularMovies, searchMovies, FilterParams } from "./api-service"; 
+// ДОБАВЛЕНЫ YEARS И RATINGS
+import { getPopularMovies, searchMovies, FilterParams, YEARS, RATINGS } from "./api-service"; 
 import SearchBar from "./components/SearchBar";
 import FilterBar from "./components/FilterBar";
 import InfiniteMovieList from "./components/InfiniteMovieList";
@@ -90,6 +91,7 @@ export default async function HomePage({
                 src={heroMovie.posterUrlPreview.replace('preview', 'original')}
                 alt={heroMovie.nameRu || ""}
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw" // ДОБАВЛЕН sizes
                 className="object-cover"
                 priority
               />
