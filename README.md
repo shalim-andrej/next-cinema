@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎬 Next.js Кинотека
 
-## Getting Started
+Современное веб-приложение для поиска фильмов и управления списком избранного. Проект создан в рамках портфолио для демонстрации навыков работы с современным стеком фронтенд-разработки.
 
-First, run the development server:
+## 🚀 Стек технологий
+- **Фреймворк:** Next.js 16+ (App Router, Turbopack)
+- **UI-библиотека:** React 19 (Server Components, `useOptimistic`, `useTransition`)
+- **Язык:** TypeScript 5
+- **Стилизация:** Tailwind CSS v4 (CSS Variables, `@theme`)
+- **API:** Кинопоиск API (unofficial)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Ключевые особенности
+- **SSR и Server Components:** Данные запрашиваются на сервере для максимальной скорости загрузки.
+- **Поиск с Debounce:** Состояние поиска синхронизировано с URL (`?q=...`), что позволяет делиться ссылками на результаты поиска.
+- **Пагинация:** Переключение страниц через URL (`?page=...`) с сохранением состояния истории браузера.
+- **Server Actions:** Добавление и удаление фильмов из избранного без создания дополнительных API-роутов.
+- **Оптимистичный UI (React 19):** Мгновенная реакция интерфейса на действия пользователя до ответа сервера.
+- **SEO-оптимизация:** Динамические мета-теги (`generateMetadata`) для каждой страницы фильма.
+- **Управление состоянием:** Избранное сохраняется в cookies (на сервере) и доступно после перезагрузки страницы.
+- **Адаптивность:** Интерфейс идеально смотрится на мобильных устройствах и десктопах.
+- **Кастомные экраны:** Обработка ошибок (`error.tsx`), скелетоны загрузки (`loading.tsx`) и страница 404 (`not-found.tsx`).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Установка и запуск локально
+1. Склонируйте репозиторий.
+2. Установите зависимости: `npm install`.
+3. Создайте файл `.env.local` в корне и добавьте ключ API Кинопоиска:
+4. Запустите сервер разработки: `npm run dev`.
+5. Откройте `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📦 Деплой
+Проект оптимизирован для деплоя на платформе Vercel. Не забудьте добавить переменную окружения `KINOPOISK_API_KEY` в настройках проекта на Vercel.

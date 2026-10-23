@@ -1,7 +1,7 @@
+// next.config.ts
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   turbopack: {
     rules: {
       "*.css": {
@@ -9,6 +9,14 @@ const nextConfig: NextConfig = {
         as: "*.css",
       },
     },
+  },
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "kinopoiskapiunofficial.tech" },
+      { protocol: "https", hostname: "st.kp.yandex.net" },
+      { protocol: "https", hostname: "avatars.mds.yandex.net" },
+      { protocol: "https", hostname: "via.placeholder.com" },
+    ],
   },
 };
 
