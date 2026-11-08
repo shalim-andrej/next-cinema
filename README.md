@@ -1,7 +1,12 @@
 🎬 Кинотека
 Веб-приложение для поиска фильмов, просмотра трейлеров и сохранения избранного. Проект создан для портфолио.
 
-🔗 Демо: https://next-cinema-5ix5.vercel.app/
+## Демо
+
+**[Открыть сайт →](https://next-cinema-5ix5.vercel.app/)**
+
+![Главный экран — десктоп](screenshots/desktop.png)
+![Мобильная версия](screenshots/mobile.png)
 
 Стек технологий
 Next.js 16 (App Router, Turbopack)
